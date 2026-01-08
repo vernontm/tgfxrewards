@@ -208,3 +208,34 @@ export async function searchUsers(query: string, excludeUserId?: string) {
 
   return data || [];
 }
+
+// Get all community members (all users in the database)
+export async function getAllCommunityMembers(excludeUserId?: string) {
+  const currentUserId = excludeUserId || await getWhopUser();
+  
+  const supabase = createAdminClient();
+
+  let query = supabase
+    .from("users")
+    .select(`
+      id, 
+      username, 
+      avatar_url,
+      streaks(current_count, longest_count)
+    `)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (currentUserId) {
+    query = query.neq("id", currentUserId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Get community members error:", error);
+    return [];
+  }
+
+  return data || [];
+}

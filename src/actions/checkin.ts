@@ -83,7 +83,7 @@ export async function quickCheckin(userId: string) {
   }
 
   // Update or create streak
-  await supabase.from("streaks").upsert(
+  const { error: streakError } = await supabase.from("streaks").upsert(
     {
       user_id: userId,
       current_count: newStreak,
@@ -94,6 +94,10 @@ export async function quickCheckin(userId: string) {
       onConflict: "user_id",
     }
   );
+
+  if (streakError) {
+    console.error("Streak upsert error:", streakError);
+  }
 
   // Calculate points
   let totalPoints = POINTS.DAILY_CHECKIN;
