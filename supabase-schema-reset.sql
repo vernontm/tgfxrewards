@@ -87,6 +87,26 @@ CREATE TABLE point_transactions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Partner profiles table (for finding partners)
+CREATE TABLE partner_profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+  is_seeking_partner BOOLEAN DEFAULT TRUE,
+  trading_experience TEXT CHECK (trading_experience IN ('beginner', 'intermediate', 'advanced', 'expert')),
+  years_trading INTEGER,
+  trading_style TEXT,
+  strengths TEXT,
+  weaknesses TEXT,
+  goals TEXT,
+  availability TEXT,
+  timezone TEXT,
+  gender TEXT,
+  age_range TEXT CHECK (age_range IN ('18-24', '25-34', '35-44', '45-54', '55+')),
+  bio TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Partnerships table
 CREATE TABLE partnerships (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -142,6 +162,7 @@ ALTER TABLE checkins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rewards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE redemptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE point_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE partner_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partnerships ENABLE ROW LEVEL SECURITY;
 
 -- Allow service role full access (for server-side operations)
@@ -151,4 +172,5 @@ CREATE POLICY "Service role has full access to checkins" ON checkins FOR ALL USI
 CREATE POLICY "Service role has full access to rewards" ON rewards FOR ALL USING (true);
 CREATE POLICY "Service role has full access to redemptions" ON redemptions FOR ALL USING (true);
 CREATE POLICY "Service role has full access to point_transactions" ON point_transactions FOR ALL USING (true);
+CREATE POLICY "Service role has full access to partner_profiles" ON partner_profiles FOR ALL USING (true);
 CREATE POLICY "Service role has full access to partnerships" ON partnerships FOR ALL USING (true);
