@@ -105,6 +105,27 @@ RETURNS INTEGER AS $$
   WHERE user_id = p_user_id;
 $$ LANGUAGE SQL STABLE;
 
+-- Function to get streak leaderboard
+CREATE OR REPLACE FUNCTION get_streak_leaderboard(limit_count INTEGER DEFAULT 50)
+RETURNS TABLE (
+  user_id TEXT,
+  username TEXT,
+  avatar_url TEXT,
+  current_count INTEGER,
+  longest_count INTEGER
+) AS $$
+  SELECT 
+    u.id as user_id,
+    u.username,
+    u.avatar_url,
+    COALESCE(s.current_count, 0) as current_count,
+    COALESCE(s.longest_count, 0) as longest_count
+  FROM users u
+  LEFT JOIN streaks s ON u.id = s.user_id
+  ORDER BY COALESCE(s.current_count, 0) DESC, COALESCE(s.longest_count, 0) DESC
+  LIMIT limit_count;
+$$ LANGUAGE SQL STABLE;
+
 -- Indexes for performance
 CREATE INDEX idx_checkins_user_date ON checkins(user_id, checkin_date);
 CREATE INDEX idx_checkins_date ON checkins(checkin_date);
