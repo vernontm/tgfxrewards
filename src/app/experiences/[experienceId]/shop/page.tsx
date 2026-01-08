@@ -1,12 +1,15 @@
 import { checkExperienceAccess, getUserBalance } from "@/lib/whop-auth";
 import { getActiveRewards, getUserRedemptionsForUser } from "@/actions/rewards";
-import { RewardCard } from "@/components/reward-card";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { PointsDisplay } from "@/components/points-display";
 import { formatDistanceToNow } from "date-fns";
+import { Gift, Lock, ShoppingBag } from "lucide-react";
+import Image from "next/image";
+import { ShopRewardCard } from "@/components/shop-reward-card";
 
-export default async function RewardsPage({
+export default async function ShopPage({
   params,
 }: {
   params: Promise<{ experienceId: string }>;
@@ -40,7 +43,7 @@ export default async function RewardsPage({
       {rewards.length > 0 ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {rewards.map((reward) => (
-            <RewardCard
+            <ShopRewardCard
               key={reward.id}
               reward={reward}
               userBalance={balance}
@@ -49,9 +52,13 @@ export default async function RewardsPage({
           ))}
         </div>
       ) : (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-zinc-400">No rewards available at the moment.</p>
+        <Card className="border-dashed">
+          <CardContent className="py-16 text-center">
+            <ShoppingBag className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">Coming Soon!</h3>
+            <p className="text-zinc-400 max-w-md mx-auto">
+              Exciting rewards are being added to the shop. Keep earning points and check back soon!
+            </p>
           </CardContent>
         </Card>
       )}
