@@ -14,7 +14,7 @@ export function StreakBadge({
 }: StreakBadgeProps) {
   const getStreakColor = () => {
     if (count >= 100) return "text-purple-500 bg-purple-500/20";
-    if (count >= 30) return "text-amber-500 bg-amber-500/20";
+    if (count >= 30) return "text-brand bg-brand/20";
     if (count >= 7) return "text-orange-500 bg-orange-500/20";
     return "text-zinc-400 bg-zinc-700";
   };

@@ -44,7 +44,7 @@ export function NavTabs({ experienceId }: NavTabsProps) {
             className={cn(
               "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors whitespace-nowrap",
               isActive
-                ? "bg-amber-500 text-black"
+                ? "bg-brand text-black"
                 : "text-zinc-400 hover:text-white hover:bg-zinc-800"
             )}
           >

@@ -48,7 +48,7 @@ export default async function CompanyDashboardPage({
       label: "Active Rewards",
       value: rewardsCount || 0,
       icon: Gift,
-      color: "text-amber-500",
+      color: "text-brand",
     },
     {
       label: "Pending Redemptions",

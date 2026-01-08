@@ -22,16 +22,16 @@ export default async function LeaderboardPage({
   });
 
   const getRankIcon = (index: number) => {
-    if (index === 0) return <Crown className="w-5 h-5 text-amber-500" />;
+    if (index === 0) return <Crown className="w-5 h-5 text-brand" />;
     if (index === 1) return <Medal className="w-5 h-5 text-zinc-400" />;
-    if (index === 2) return <Award className="w-5 h-5 text-amber-700" />;
+    if (index === 2) return <Award className="w-5 h-5 text-brand-dark" />;
     return null;
   };
 
   const getRankStyle = (index: number) => {
-    if (index === 0) return "bg-amber-500/10 border-amber-500/30";
+    if (index === 0) return "bg-brand/10 border-brand/30";
     if (index === 1) return "bg-zinc-400/10 border-zinc-400/30";
-    if (index === 2) return "bg-amber-700/10 border-amber-700/30";
+    if (index === 2) return "bg-brand-dark/10 border-brand-dark/30";
     return "";
   };
 
@@ -68,7 +68,7 @@ export default async function LeaderboardPage({
                       key={user.user_id}
                       className={`flex items-center gap-4 p-4 rounded-xl border ${
                         isCurrentUser
-                          ? "bg-amber-500/5 border-amber-500/20"
+                          ? "bg-brand/5 border-brand/20"
                           : getRankStyle(index) || "border-zinc-800"
                       }`}
                     >
@@ -98,7 +98,7 @@ export default async function LeaderboardPage({
                         <p className="font-medium text-white truncate">
                           {user.username || "Anonymous"}
                           {isCurrentUser && (
-                            <span className="text-amber-500 ml-2">(You)</span>
+                            <span className="text-brand ml-2">(You)</span>
                           )}
                         </p>
                         <p className="text-xs text-zinc-500">

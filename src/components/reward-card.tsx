@@ -125,7 +125,7 @@ export function RewardCard({ reward, userBalance, userId }: RewardCardProps) {
           </div>
           <div className="flex justify-between text-sm mt-2">
             <span className="text-zinc-400">Cost</span>
-            <span className="text-amber-500">
+            <span className="text-brand">
               -{reward.point_cost.toLocaleString()} points
             </span>
           </div>

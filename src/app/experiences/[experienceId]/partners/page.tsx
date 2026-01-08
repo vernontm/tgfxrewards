@@ -135,7 +135,7 @@ export default function PartnersPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <UserPlus className="w-5 h-5 text-amber-500" />
+              <UserPlus className="w-5 h-5 text-brand" />
               Pending Requests
             </CardTitle>
           </CardHeader>

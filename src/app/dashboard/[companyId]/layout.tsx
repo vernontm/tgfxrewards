@@ -37,7 +37,7 @@ export default async function CompanyDashboardLayout({
       <header className="border-b border-zinc-800 sticky top-0 bg-zinc-950/95 backdrop-blur z-50">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xl font-bold text-amber-500">
+            <span className="text-xl font-bold text-brand">
               Daily Grind Admin
             </span>
           </div>

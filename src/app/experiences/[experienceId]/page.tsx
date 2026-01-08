@@ -108,7 +108,7 @@ export default async function ExperienceHomePage({
             <PointsDisplay points={balance} size="lg" />
             <Link
               href={`/experiences/${experienceId}/rewards`}
-              className="text-xs text-amber-500 hover:underline mt-2 inline-block"
+              className="text-xs text-brand hover:underline mt-2 inline-block"
             >
               View Rewards Shop
             </Link>
@@ -123,7 +123,7 @@ export default async function ExperienceHomePage({
               <span>Top Streaks</span>
               <Link
                 href={`/experiences/${experienceId}/leaderboard`}
-                className="text-sm text-amber-500 hover:underline font-normal"
+                className="text-sm text-brand hover:underline font-normal"
               >
                 View All
               </Link>
@@ -149,11 +149,11 @@ export default async function ExperienceHomePage({
                         <span
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
                             index === 0
-                              ? "bg-amber-500 text-black"
+                              ? "bg-brand text-black"
                               : index === 1
                               ? "bg-zinc-400 text-black"
                               : index === 2
-                              ? "bg-amber-700 text-white"
+                              ? "bg-brand-dark text-white"
                               : "bg-zinc-700 text-zinc-300"
                           }`}
                         >

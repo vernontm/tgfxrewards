@@ -71,7 +71,7 @@ export function CheckinForm({
             particleCount: 100,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ["#f59e0b", "#fbbf24", "#fcd34d"],
+            colors: ["#5abcd2", "#7fcce0", "#a3dced"],
           });
         }
 
@@ -108,7 +108,7 @@ export function CheckinForm({
         <CardContent className="pt-6">
           <div className="text-center space-y-6">
             <div className="flex items-center justify-center gap-2">
-              <Flame className="w-8 h-8 text-amber-500" />
+              <Flame className="w-8 h-8 text-brand" />
               <StreakBadge count={currentStreak} />
             </div>
             <div>
@@ -159,8 +159,8 @@ export function CheckinForm({
         </CardHeader>
         <CardContent>
           {result?.milestone && (
-            <div className="mb-4 p-3 bg-amber-500/20 rounded-xl text-center">
-              <p className="text-amber-500 font-semibold">🎉 {result.milestone}</p>
+            <div className="mb-4 p-3 bg-brand/20 rounded-xl text-center">
+              <p className="text-brand font-semibold">🎉 {result.milestone}</p>
             </div>
           )}
           <p className="text-zinc-400 mb-4">
@@ -179,7 +179,7 @@ export function CheckinForm({
                     onClick={() => setMood(m.value)}
                     className={`flex flex-col items-center p-3 rounded-xl transition-all ${
                       mood === m.value
-                        ? "bg-amber-500/20 ring-2 ring-amber-500"
+                        ? "bg-brand/20 ring-2 ring-brand"
                         : "bg-zinc-800 hover:bg-zinc-700"
                     }`}
                   >

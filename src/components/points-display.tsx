@@ -15,7 +15,7 @@ export function PointsDisplay({
   return (
     <div
       className={cn(
-        "flex items-center gap-1.5 bg-amber-500/20 text-amber-500 rounded-full font-semibold",
+        "flex items-center gap-1.5 bg-brand/20 text-brand rounded-full font-semibold",
         {
           "px-2 py-1 text-xs": size === "sm",
           "px-3 py-1.5 text-sm": size === "default",

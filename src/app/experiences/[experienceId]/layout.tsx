@@ -36,7 +36,7 @@ export default async function ExperienceLayout({
           <div className="flex items-center justify-between mb-4">
             <Link
               href={`/experiences/${experienceId}`}
-              className="text-xl font-bold text-amber-500"
+              className="text-xl font-bold text-brand"
             >
               Daily Grind
             </Link>
