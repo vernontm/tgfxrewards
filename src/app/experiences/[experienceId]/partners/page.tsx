@@ -183,6 +183,105 @@ export default function PartnersPage() {
         </Card>
       )}
 
+      {myProfile && !showProfileForm && (
+        <Card className="border-brand/30">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Target className="w-5 h-5 text-brand" />
+              My Partner Profile
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-zinc-800 rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  {myProfile.users?.avatar_url ? (
+                    <Image
+                      src={myProfile.users.avatar_url}
+                      alt={myProfile.users.username || "You"}
+                      width={48}
+                      height={48}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center">
+                      <Users className="w-6 h-6 text-zinc-400" />
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-white font-medium text-lg">
+                      {myProfile.users?.username || "You"}
+                    </span>
+                    <div className="flex items-center gap-3 text-sm text-zinc-400">
+                      <span className="bg-brand/20 text-brand px-2 py-0.5 rounded-full text-xs">
+                        {getExperienceLabel(myProfile.trading_experience)}
+                      </span>
+                      {myProfile.is_seeking_partner && (
+                        <span className="text-green-400 text-xs">Seeking Partner</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowProfileForm(true)}
+                >
+                  Edit
+                </Button>
+              </div>
+
+              {myProfile.trading_style && (
+                <p className="text-zinc-400 text-sm mt-3">
+                  <strong className="text-zinc-300">Style:</strong> {myProfile.trading_style}
+                </p>
+              )}
+
+              {myProfile.bio && (
+                <p className="text-zinc-400 text-sm mt-2">
+                  {myProfile.bio}
+                </p>
+              )}
+
+              <div className="border-t border-zinc-700 mt-4 pt-4 space-y-3">
+                {myProfile.strengths && (
+                  <div>
+                    <p className="text-xs text-zinc-500 uppercase tracking-wide mb-1">Strengths</p>
+                    <p className="text-zinc-300 text-sm">{myProfile.strengths}</p>
+                  </div>
+                )}
+                {myProfile.weaknesses && (
+                  <div>
+                    <p className="text-xs text-zinc-500 uppercase tracking-wide mb-1">Areas to Improve</p>
+                    <p className="text-zinc-300 text-sm">{myProfile.weaknesses}</p>
+                  </div>
+                )}
+                {myProfile.goals && (
+                  <div>
+                    <p className="text-xs text-zinc-500 uppercase tracking-wide mb-1">Goals</p>
+                    <p className="text-zinc-300 text-sm">{myProfile.goals}</p>
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-4 text-sm text-zinc-400 pt-2">
+                  {myProfile.availability && (
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      {myProfile.availability}
+                    </span>
+                  )}
+                  {myProfile.timezone && (
+                    <span>{myProfile.timezone}</span>
+                  )}
+                  {myProfile.years_trading && (
+                    <span>{myProfile.years_trading} years trading</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {partners.pending_incoming.length > 0 && (
         <Card>
           <CardHeader>
