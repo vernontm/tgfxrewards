@@ -18,7 +18,7 @@ export default async function CheckinPage({
   ]);
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="w-full">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white mb-2">Daily Check-in</h1>
         <p className="text-zinc-400">
