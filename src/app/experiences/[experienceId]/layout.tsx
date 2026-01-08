@@ -38,7 +38,7 @@ export default async function ExperienceLayout({
               href={`/experiences/${experienceId}`}
               className="text-xl font-bold text-brand"
             >
-              Daily Grind
+              TGFX Rewards
             </Link>
             <PointsDisplay points={balance} />
           </div>

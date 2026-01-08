@@ -9,7 +9,9 @@ import {
   Trophy,
   Users,
   Gift,
-  MessageSquare,
+  Target,
+  GraduationCap,
+  Activity,
 } from "lucide-react";
 
 interface NavTabsProps {
@@ -24,10 +26,12 @@ export function NavTabs({ experienceId }: NavTabsProps) {
   const tabs = [
     { href: baseUrl, label: "Home", icon: Home },
     { href: `${baseUrl}/checkin`, label: "Check In", icon: CheckCircle },
+    { href: `${baseUrl}/milestones`, label: "Milestones", icon: Target },
+    { href: `${baseUrl}/course`, label: "Course", icon: GraduationCap },
     { href: `${baseUrl}/leaderboard`, label: "Leaderboard", icon: Trophy },
     { href: `${baseUrl}/partners`, label: "Partners", icon: Users },
-    { href: `${baseUrl}/rewards`, label: "Rewards", icon: Gift },
-    { href: `${baseUrl}/feed`, label: "Feed", icon: MessageSquare },
+    { href: `${baseUrl}/shop`, label: "Shop", icon: Gift },
+    { href: `${baseUrl}/feed`, label: "Feed", icon: Activity },
   ];
 
   return (

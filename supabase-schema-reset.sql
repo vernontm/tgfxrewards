@@ -87,6 +87,44 @@ CREATE TABLE point_transactions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Milestones table (tasks users can complete for points)
+CREATE TABLE milestones (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  points INTEGER NOT NULL DEFAULT 0,
+  milestone_type TEXT NOT NULL CHECK (milestone_type IN ('broker_referral', 'discord_join', 'course_complete', 'introduction', 'checkin_streak', 'custom')),
+  requirement_value INTEGER DEFAULT 1,
+  icon TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- User milestone completions
+CREATE TABLE user_milestones (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+  milestone_id UUID REFERENCES milestones(id) ON DELETE CASCADE,
+  completed_at TIMESTAMPTZ DEFAULT NOW(),
+  verified_by TEXT,
+  notes TEXT,
+  UNIQUE(user_id, milestone_id)
+);
+
+-- Activity feed table
+CREATE TABLE activity_feed (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+  activity_type TEXT NOT NULL CHECK (activity_type IN ('checkin', 'milestone', 'reward_claim', 'streak', 'partner_connect', 'course_progress', 'introduction')),
+  title TEXT NOT NULL,
+  description TEXT,
+  points_earned INTEGER DEFAULT 0,
+  metadata JSONB,
+  is_public BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Partner profiles table (for finding partners)
 CREATE TABLE partner_profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -162,6 +200,9 @@ ALTER TABLE checkins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rewards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE redemptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE point_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE milestones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_milestones ENABLE ROW LEVEL SECURITY;
+ALTER TABLE activity_feed ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partner_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE partnerships ENABLE ROW LEVEL SECURITY;
 
@@ -172,5 +213,18 @@ CREATE POLICY "Service role has full access to checkins" ON checkins FOR ALL USI
 CREATE POLICY "Service role has full access to rewards" ON rewards FOR ALL USING (true);
 CREATE POLICY "Service role has full access to redemptions" ON redemptions FOR ALL USING (true);
 CREATE POLICY "Service role has full access to point_transactions" ON point_transactions FOR ALL USING (true);
+CREATE POLICY "Service role has full access to milestones" ON milestones FOR ALL USING (true);
+CREATE POLICY "Service role has full access to user_milestones" ON user_milestones FOR ALL USING (true);
+CREATE POLICY "Service role has full access to activity_feed" ON activity_feed FOR ALL USING (true);
 CREATE POLICY "Service role has full access to partner_profiles" ON partner_profiles FOR ALL USING (true);
 CREATE POLICY "Service role has full access to partnerships" ON partnerships FOR ALL USING (true);
+
+-- Insert default milestones
+INSERT INTO milestones (title, description, points, milestone_type, requirement_value, icon, sort_order) VALUES
+  ('Join Our Broker', 'Sign up with our partner broker through the referral link', 500, 'broker_referral', 1, 'building', 1),
+  ('Join Discord', 'Connect with the community on Discord', 100, 'discord_join', 1, 'message-circle', 2),
+  ('Complete the Course', 'Finish all lessons in the Inner Market Mastery course', 1000, 'course_complete', 1, 'graduation-cap', 3),
+  ('Introduce Yourself', 'Post an introduction in the community', 50, 'introduction', 1, 'user-plus', 4),
+  ('7 Day Streak', 'Check in for 7 consecutive days', 100, 'checkin_streak', 7, 'flame', 5),
+  ('30 Day Streak', 'Check in for 30 consecutive days', 500, 'checkin_streak', 30, 'flame', 6),
+  ('100 Day Streak', 'Check in for 100 consecutive days', 2000, 'checkin_streak', 100, 'flame', 7);

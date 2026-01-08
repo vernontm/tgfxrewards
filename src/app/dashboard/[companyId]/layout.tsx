@@ -1,6 +1,6 @@
 import { checkCompanyAccess } from "@/lib/whop-auth";
 import Link from "next/link";
-import { LayoutDashboard, Gift, ClipboardList, Users, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Gift, ClipboardList, Users, Target, Activity } from "lucide-react";
 
 export default async function CompanyDashboardLayout({
   children,
@@ -28,8 +28,10 @@ export default async function CompanyDashboardLayout({
   const adminTabs = [
     { href: `/dashboard/${companyId}`, label: "Overview", icon: LayoutDashboard },
     { href: `/dashboard/${companyId}/rewards`, label: "Rewards", icon: Gift },
+    { href: `/dashboard/${companyId}/milestones`, label: "Milestones", icon: Target },
     { href: `/dashboard/${companyId}/redemptions`, label: "Redemptions", icon: ClipboardList },
     { href: `/dashboard/${companyId}/users`, label: "Users", icon: Users },
+    { href: `/dashboard/${companyId}/activity`, label: "Activity", icon: Activity },
   ];
 
   return (
@@ -38,7 +40,7 @@ export default async function CompanyDashboardLayout({
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xl font-bold text-brand">
-              Daily Grind Admin
+              TGFX Rewards Admin
             </span>
           </div>
           <nav className="flex gap-1 overflow-x-auto pb-2 scrollbar-hide">

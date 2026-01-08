@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Daily Grind - Community Accountability",
+  title: "TGFX Rewards - Trading Community",
   description: "Build habits, track progress, and stay accountable with your community",
 };
 
