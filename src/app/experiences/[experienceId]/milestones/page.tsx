@@ -204,110 +204,130 @@ export default function MilestonesPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {milestones.map((milestone) => {
-          const isCompleted = completedIds.has(milestone.id);
-          const isPendingReview = pendingIds.has(milestone.id);
-          const canClaim = canClaimStreak(milestone);
-          const Icon = getIcon(milestone.icon);
-          const isStreakMilestone = milestone.milestone_type === "checkin_streak";
-          const isBrokerReferral = milestone.milestone_type === "broker_referral";
-          const needsVerification = ["broker_referral", "discord_join", "introduction", "trade_count"].includes(milestone.milestone_type);
-          const showingBrokerForm = showBrokerForm === milestone.id;
-          const progress = isCompleted ? 100 : isPendingReview ? 100 : getStreakProgress(milestone);
+      {/* Milestones grouped by category */}
+      {Object.entries(groupedMilestones).map(([type, typeMilestones]) => (
+        <div key={type} className="space-y-3">
+          {/* Category Header */}
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold text-white whitespace-nowrap">
+              {categoryLabels[type] || "Other"}
+            </h2>
+            <div className="flex-1 h-px bg-zinc-800" />
+          </div>
 
-          return (
-            <div
-              key={milestone.id}
-              className={`relative rounded-2xl border p-4 bg-gradient-to-br transition-all hover:scale-[1.02] ${
-                isCompleted 
-                  ? "border-brand/50 bg-brand/10" 
-                  : isPendingReview 
-                    ? "border-yellow-500/50 bg-yellow-500/10" 
-                    : categoryColors[milestone.milestone_type] || categoryColors.custom
-              }`}
-            >
-              {/* Status Badge */}
-              {isCompleted && (
-                <div className="absolute top-2 right-2">
-                  <CheckCircle className="w-5 h-5 text-brand" />
-                </div>
-              )}
-              {isPendingReview && (
-                <div className="absolute top-2 right-2">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
-                </div>
-              )}
+          {/* Horizontal scrolling cards */}
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+            {typeMilestones.map((milestone) => {
+              const isCompleted = completedIds.has(milestone.id);
+              const isPendingReview = pendingIds.has(milestone.id);
+              const canClaim = canClaimStreak(milestone);
+              const Icon = getIcon(milestone.icon);
+              const isStreakMilestone = milestone.milestone_type === "checkin_streak";
+              const isBrokerReferral = milestone.milestone_type === "broker_referral";
+              const needsVerification = ["broker_referral", "discord_join", "introduction", "trade_count"].includes(milestone.milestone_type);
+              const progress = isCompleted ? 100 : isPendingReview ? 100 : getStreakProgress(milestone);
 
-              {/* Icon */}
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${
-                isCompleted ? "bg-brand/20" : isPendingReview ? "bg-yellow-500/20" : "bg-zinc-800/80"
-              }`}>
-                <Icon className={`w-6 h-6 ${
-                  isCompleted ? "text-brand" : isPendingReview ? "text-yellow-500" : "text-zinc-400"
-                }`} />
-              </div>
-
-              {/* Title & Points */}
-              <h3 className="font-semibold text-white text-sm mb-1 line-clamp-1">
-                {milestone.title}
-              </h3>
-              <div className="flex items-center gap-1 text-brand text-sm font-medium mb-2">
-                <Gift className="w-3 h-3" />
-                {milestone.points.toLocaleString()} pts
-              </div>
-
-              {/* Progress Bar */}
-              <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden mb-3">
-                <div 
-                  className={`h-full transition-all duration-500 ${
-                    isCompleted ? "bg-brand" : isPendingReview ? "bg-yellow-500" : "bg-zinc-600"
+              return (
+                <div
+                  key={milestone.id}
+                  className={`relative flex-shrink-0 w-64 rounded-2xl border p-4 bg-gradient-to-br transition-all hover:scale-[1.02] ${
+                    isCompleted 
+                      ? "border-brand/50 bg-brand/10" 
+                      : isPendingReview 
+                        ? "border-yellow-500/50 bg-yellow-500/10" 
+                        : categoryColors[milestone.milestone_type] || categoryColors.custom
                   }`}
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
+                >
+                  {/* Status Badge */}
+                  {isCompleted && (
+                    <div className="absolute top-3 right-3">
+                      <CheckCircle className="w-5 h-5 text-brand" />
+                    </div>
+                  )}
+                  {isPendingReview && (
+                    <div className="absolute top-3 right-3">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                    </div>
+                  )}
 
-              {/* Action Area */}
-              <div className="space-y-2">
-                {isCompleted ? (
-                  <p className="text-xs text-brand font-medium">Completed!</p>
-                ) : isPendingReview ? (
-                  <p className="text-xs text-yellow-500 font-medium">Pending Review</p>
-                ) : !canClaim ? (
-                  <div className="flex items-center gap-1 text-xs text-zinc-500">
-                    <Lock className="w-3 h-3" />
-                    {Math.max(streak?.current_count || 0, streak?.longest_count || 0)}/{milestone.requirement_value} days
+                  {/* Header with Icon */}
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      isCompleted ? "bg-brand/20" : isPendingReview ? "bg-yellow-500/20" : "bg-zinc-800/80"
+                    }`}>
+                      <Icon className={`w-5 h-5 ${
+                        isCompleted ? "text-brand" : isPendingReview ? "text-yellow-500" : "text-zinc-400"
+                      }`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-white text-sm leading-tight">
+                        {milestone.title}
+                      </h3>
+                      <div className="flex items-center gap-1 text-brand text-xs font-medium mt-0.5">
+                        <Gift className="w-3 h-3" />
+                        {milestone.points.toLocaleString()} pts
+                      </div>
+                    </div>
                   </div>
-                ) : (
-                  <>
-                    {isBrokerReferral && (
-                      <Link href={BROKER_REFERRAL_LINK} target="_blank">
-                        <Button size="sm" variant="outline" className="w-full text-xs h-7">
-                          <ExternalLink className="w-3 h-3 mr-1" />
-                          Sign Up
+
+                  {/* Description */}
+                  <p className="text-xs text-zinc-400 mb-3 line-clamp-2">
+                    {milestone.description}
+                  </p>
+
+                  {/* Progress Bar */}
+                  <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden mb-3">
+                    <div 
+                      className={`h-full transition-all duration-500 ${
+                        isCompleted ? "bg-brand" : isPendingReview ? "bg-yellow-500" : "bg-zinc-600"
+                      }`}
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+
+                  {/* Action Area */}
+                  <div className="space-y-2">
+                    {isCompleted ? (
+                      <p className="text-xs text-brand font-medium">Completed!</p>
+                    ) : isPendingReview ? (
+                      <p className="text-xs text-yellow-500 font-medium">Pending Review</p>
+                    ) : !canClaim ? (
+                      <div className="flex items-center gap-1 text-xs text-zinc-500">
+                        <Lock className="w-3 h-3" />
+                        {Math.max(streak?.current_count || 0, streak?.longest_count || 0)}/{milestone.requirement_value} days
+                      </div>
+                    ) : (
+                      <>
+                        {isBrokerReferral && (
+                          <Link href={BROKER_REFERRAL_LINK} target="_blank">
+                            <Button size="sm" variant="outline" className="w-full text-xs h-7">
+                              <ExternalLink className="w-3 h-3 mr-1" />
+                              Sign Up
+                            </Button>
+                          </Link>
+                        )}
+                        <Button
+                          size="sm"
+                          className="w-full text-xs h-7"
+                          onClick={() => needsVerification ? handleSubmitForReview(milestone) : handleClaim(milestone)}
+                          disabled={isPending && claimingId === milestone.id}
+                        >
+                          {isPending && claimingId === milestone.id 
+                            ? "..." 
+                            : needsVerification 
+                              ? "Verify" 
+                              : "Claim"
+                          }
                         </Button>
-                      </Link>
+                      </>
                     )}
-                    <Button
-                      size="sm"
-                      className="w-full text-xs h-7"
-                      onClick={() => needsVerification ? handleSubmitForReview(milestone) : handleClaim(milestone)}
-                      disabled={isPending && claimingId === milestone.id}
-                    >
-                      {isPending && claimingId === milestone.id 
-                        ? "..." 
-                        : needsVerification 
-                          ? "Verify" 
-                          : "Claim"
-                      }
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
 
       {/* Broker Verification Modal */}
       {showBrokerForm && (
