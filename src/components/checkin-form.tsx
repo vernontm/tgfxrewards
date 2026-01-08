@@ -71,7 +71,7 @@ export function CheckinForm({
             particleCount: 100,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ["#5abcd2", "#7fcce0", "#a3dced"],
+            colors: ["#5dcead", "#7fddc4", "#a3ebd8"],
           });
         }
 
