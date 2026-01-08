@@ -41,8 +41,8 @@ const iconMap: Record<string, React.ElementType> = {
   "trending-up": TrendingUp,
 };
 
-// PlexyTrade referral link - update this with your actual referral link
-const BROKER_REFERRAL_LINK = "https://plexytrade.com/?ref=tgfx";
+// PlexyTrade referral link
+const BROKER_REFERRAL_LINK = "https://plexytrade.com/?t=TBZp1B&term=register";
 
 export default function MilestonesPage() {
   const [milestones, setMilestones] = useState<Milestone[]>([]);
