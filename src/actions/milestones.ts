@@ -42,7 +42,7 @@ export async function getUserMilestones(userId?: string) {
 
 export async function getMilestonesWithStatus() {
   const userId = await getWhopUser();
-  if (!userId) return { milestones: [], completedIds: new Set<string>() };
+  if (!userId) return { milestones: [], completedIds: new Set<string>(), pendingIds: new Set<string>() };
 
   const supabase = createAdminClient();
 
@@ -54,7 +54,7 @@ export async function getMilestonesWithStatus() {
       .order("sort_order", { ascending: true }),
     supabase
       .from("user_milestones")
-      .select("milestone_id")
+      .select("milestone_id, verified_by")
       .eq("user_id", userId),
     supabase
       .from("streaks")
@@ -64,12 +64,24 @@ export async function getMilestonesWithStatus() {
   ]);
 
   const milestones = milestonesResult.data || [];
+  
+  // Completed = has verified_by set (approved by admin)
   const completedIds = new Set(
-    (userMilestonesResult.data || []).map((um: { milestone_id: string }) => um.milestone_id)
+    (userMilestonesResult.data || [])
+      .filter((um: { milestone_id: string; verified_by: string | null }) => um.verified_by !== null)
+      .map((um: { milestone_id: string }) => um.milestone_id)
   );
+  
+  // Pending = submitted but not yet verified
+  const pendingIds = new Set(
+    (userMilestonesResult.data || [])
+      .filter((um: { milestone_id: string; verified_by: string | null }) => um.verified_by === null)
+      .map((um: { milestone_id: string }) => um.milestone_id)
+  );
+  
   const streak = streakResult.data;
 
-  return { milestones, completedIds, streak, userId };
+  return { milestones, completedIds, pendingIds, streak, userId };
 }
 
 export async function claimMilestone(milestoneId: string) {
@@ -152,7 +164,16 @@ export async function claimMilestone(milestoneId: string) {
   return { success: true, points: milestone.points };
 }
 
-export async function submitMilestoneForReview(milestoneId: string, proof?: string) {
+export interface BrokerSubmissionData {
+  fullName: string;
+  email: string;
+}
+
+export async function submitMilestoneForReview(
+  milestoneId: string, 
+  proof?: string,
+  brokerData?: BrokerSubmissionData
+) {
   const userId = await getWhopUser();
   if (!userId) {
     return { success: false, error: "Not authenticated" };
@@ -172,13 +193,19 @@ export async function submitMilestoneForReview(milestoneId: string, proof?: stri
     return { success: false, error: "Already submitted" };
   }
 
+  // Format notes based on submission type
+  let notes = proof || "";
+  if (brokerData) {
+    notes = `Full Name: ${brokerData.fullName}\nEmail: ${brokerData.email}`;
+  }
+
   // Create pending milestone (verified_by will be null until admin approves)
   const { error } = await supabase
     .from("user_milestones")
     .insert({
       user_id: userId,
       milestone_id: milestoneId,
-      notes: proof,
+      notes,
       verified_by: null, // Pending verification
     });
 
