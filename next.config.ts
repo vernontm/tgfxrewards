@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "localhost:3003",
+        "tgfxrewards-aett.vercel.app",
+        "*.whop.com",
+        "pxb2t8mq5e44w28870qu.apps.whop.com",
+      ],
+    },
+  },
   async headers() {
     return [
       {
