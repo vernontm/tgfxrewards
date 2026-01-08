@@ -15,7 +15,8 @@ import {
   Building,
   Lock,
   Gift,
-  X
+  X,
+  TrendingUp
 } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -35,6 +36,7 @@ const iconMap: Record<string, React.ElementType> = {
   "graduation-cap": GraduationCap,
   "user-plus": UserPlus,
   building: Building,
+  "trending-up": TrendingUp,
 };
 
 export default function MilestonesPage() {
@@ -172,7 +174,7 @@ export default function MilestonesPage() {
           const Icon = getIcon(milestone.icon);
           const isStreakMilestone = milestone.milestone_type === "checkin_streak";
           const isBrokerReferral = milestone.milestone_type === "broker_referral";
-          const needsVerification = ["broker_referral", "discord_join", "introduction"].includes(milestone.milestone_type);
+          const needsVerification = ["broker_referral", "discord_join", "introduction", "trade_count"].includes(milestone.milestone_type);
           const showingBrokerForm = showBrokerForm === milestone.id;
 
           return (

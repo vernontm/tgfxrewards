@@ -44,6 +44,7 @@ const MILESTONE_TYPES = [
   { value: "course_complete", label: "Course Complete" },
   { value: "introduction", label: "Introduction" },
   { value: "checkin_streak", label: "Check-in Streak" },
+  { value: "trade_count", label: "Trade Count" },
   { value: "custom", label: "Custom" },
 ];
 

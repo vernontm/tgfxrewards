@@ -93,7 +93,7 @@ CREATE TABLE milestones (
   title TEXT NOT NULL,
   description TEXT,
   points INTEGER NOT NULL DEFAULT 0,
-  milestone_type TEXT NOT NULL CHECK (milestone_type IN ('broker_referral', 'discord_join', 'course_complete', 'introduction', 'checkin_streak', 'custom')),
+  milestone_type TEXT NOT NULL CHECK (milestone_type IN ('broker_referral', 'discord_join', 'course_complete', 'introduction', 'checkin_streak', 'trade_count', 'custom')),
   requirement_value INTEGER DEFAULT 1,
   icon TEXT,
   is_active BOOLEAN DEFAULT TRUE,
@@ -221,10 +221,13 @@ CREATE POLICY "Service role has full access to partnerships" ON partnerships FOR
 
 -- Insert default milestones
 INSERT INTO milestones (title, description, points, milestone_type, requirement_value, icon, sort_order) VALUES
-  ('Join Our Broker', 'Sign up with our partner broker through the referral link', 500, 'broker_referral', 1, 'building', 1),
+  ('Join Our Broker', 'Sign up with PlexyTrade through our referral link', 500, 'broker_referral', 1, 'building', 1),
   ('Join Discord', 'Connect with the community on Discord', 100, 'discord_join', 1, 'message-circle', 2),
   ('Complete the Course', 'Finish all lessons in the Inner Market Mastery course', 1000, 'course_complete', 1, 'graduation-cap', 3),
   ('Introduce Yourself', 'Post an introduction in the community', 50, 'introduction', 1, 'user-plus', 4),
-  ('7 Day Streak', 'Check in for 7 consecutive days', 100, 'checkin_streak', 7, 'flame', 5),
-  ('30 Day Streak', 'Check in for 30 consecutive days', 500, 'checkin_streak', 30, 'flame', 6),
-  ('100 Day Streak', 'Check in for 100 consecutive days', 2000, 'checkin_streak', 100, 'flame', 7);
+  ('10 Trades', 'Complete 10 trades on your PlexyTrade account', 100, 'trade_count', 10, 'trending-up', 5),
+  ('50 Trades', 'Complete 50 trades on your PlexyTrade account', 300, 'trade_count', 50, 'trending-up', 6),
+  ('100 Trades', 'Complete 100 trades on your PlexyTrade account', 750, 'trade_count', 100, 'trending-up', 7),
+  ('7 Day Streak', 'Check in for 7 consecutive days', 100, 'checkin_streak', 7, 'flame', 8),
+  ('30 Day Streak', 'Check in for 30 consecutive days', 500, 'checkin_streak', 30, 'flame', 9),
+  ('100 Day Streak', 'Check in for 100 consecutive days', 2000, 'checkin_streak', 100, 'flame', 10);
