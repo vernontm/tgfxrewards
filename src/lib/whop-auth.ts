@@ -47,20 +47,32 @@ export async function checkCompanyAccess(companyId: string) {
   }
 }
 
-export async function syncUserToSupabase(userId: string, username?: string, avatarUrl?: string) {
+export async function syncUserToSupabase(userId: string) {
   const supabase = createAdminClient();
+
+  // Fetch user info from Whop
+  let username: string | null = null;
+  let avatarUrl: string | null = null;
+  try {
+    const whopUser = await whopsdk.users.retrieve(userId);
+    username = whopUser.username || whopUser.name || null;
+    avatarUrl = whopUser.profile_picture?.url || null;
+  } catch (error) {
+    console.error("Failed to fetch Whop user:", error);
+  }
 
   const { data: existingUser } = await supabase
     .from("users")
-    .select("id")
+    .select("id, username")
     .eq("id", userId)
     .single();
 
   if (!existingUser) {
+    // Create new user
     await supabase.from("users").insert({
       id: userId,
-      username: username || null,
-      avatar_url: avatarUrl || null,
+      username,
+      avatar_url: avatarUrl,
     });
 
     await supabase.from("streaks").insert({
@@ -68,6 +80,12 @@ export async function syncUserToSupabase(userId: string, username?: string, avat
       current_count: 0,
       longest_count: 0,
     });
+  } else if (!existingUser.username && username) {
+    // Update existing user with username if they don't have one
+    await supabase
+      .from("users")
+      .update({ username, avatar_url: avatarUrl })
+      .eq("id", userId);
   }
 
   return userId;
