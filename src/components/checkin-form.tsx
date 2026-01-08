@@ -251,28 +251,65 @@ export function CheckinForm({
 
   // Step 3: Complete
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="text-center space-y-4">
-          <div className="text-4xl">✅</div>
-          <h2 className="text-xl font-semibold text-white">
-            You&apos;re checked in for today!
-          </h2>
-          <div className="flex items-center justify-center gap-4">
-            <div className="text-center">
-              <p className="text-zinc-400 text-sm">Current Streak</p>
-              <StreakBadge count={result?.newStreak || currentStreak} showLabel={false} />
+    <Card className="overflow-hidden">
+      <div className="bg-gradient-to-br from-brand/20 via-brand/10 to-transparent">
+        <CardContent className="pt-8 pb-8">
+          <div className="text-center space-y-6">
+            {/* Success Animation */}
+            <div className="relative">
+              <div className="w-20 h-20 mx-auto bg-brand/20 rounded-full flex items-center justify-center">
+                <div className="w-14 h-14 bg-brand/30 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-8 h-8 text-brand" />
+                </div>
+              </div>
+              <div className="absolute -top-1 -right-1 left-0 right-0 mx-auto w-fit">
+                <span className="text-2xl">🎉</span>
+              </div>
             </div>
+
+            {/* Message */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                You&apos;re All Set!
+              </h2>
+              <p className="text-zinc-400">
+                Great job staying consistent. Keep the momentum going!
+              </p>
+            </div>
+
+            {/* Stats Row */}
+            <div className="flex items-center justify-center gap-6 py-4">
+              <div className="text-center px-6 py-3 bg-zinc-800/50 rounded-2xl">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <Flame className="w-5 h-5 text-orange-500" />
+                  <span className="text-2xl font-bold text-white">
+                    {result?.newStreak || currentStreak}
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-400 uppercase tracking-wide">Day Streak</p>
+              </div>
+              
+              {result?.pointsEarned && result.pointsEarned > 0 && (
+                <div className="text-center px-6 py-3 bg-zinc-800/50 rounded-2xl">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <span className="text-2xl font-bold text-brand">+{result.pointsEarned}</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 uppercase tracking-wide">Points Earned</p>
+                </div>
+              )}
+            </div>
+
+            {/* Action Button */}
+            <Button
+              onClick={() => setStep("survey")}
+              variant="outline"
+              className="px-8"
+            >
+              {existingCheckin?.mood ? "Edit Survey Responses" : "Complete Daily Survey"}
+            </Button>
           </div>
-          <Button
-            onClick={() => setStep("survey")}
-            variant="outline"
-            className="mt-4"
-          >
-            {existingCheckin?.mood ? "Edit Survey" : "Fill Out Survey"}
-          </Button>
-        </div>
-      </CardContent>
+        </CardContent>
+      </div>
     </Card>
   );
 }
