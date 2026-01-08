@@ -65,7 +65,6 @@ export async function syncUserToSupabase(userId: string, username?: string, avat
 
     await supabase.from("streaks").insert({
       user_id: userId,
-      streak_type: "checkin",
       current_count: 0,
       longest_count: 0,
     });
