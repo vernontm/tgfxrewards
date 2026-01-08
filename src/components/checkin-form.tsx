@@ -252,34 +252,34 @@ export function CheckinForm({
   // Step 3: Complete
   return (
     <Card className="overflow-hidden">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <CheckCircle className="w-5 h-5 text-brand" />
+          Today&apos;s Check-in
+        </CardTitle>
+      </CardHeader>
       <div className="bg-gradient-to-br from-brand/20 via-brand/10 to-transparent">
-        <CardContent className="pt-8 pb-8">
+        <CardContent className="pt-4 pb-8">
           <div className="text-center space-y-6">
-            {/* Success Animation */}
-            <div className="relative">
-              <div className="w-20 h-20 mx-auto bg-brand/20 rounded-full flex items-center justify-center">
-                <div className="w-14 h-14 bg-brand/30 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-8 h-8 text-brand" />
-                </div>
-              </div>
-              <div className="absolute -top-1 -right-1 left-0 right-0 mx-auto w-fit">
-                <span className="text-2xl">🎉</span>
-              </div>
+            {/* Done Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/20 rounded-full">
+              <CheckCircle className="w-5 h-5 text-brand" />
+              <span className="text-brand font-semibold text-lg">Done</span>
             </div>
 
             {/* Message */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-xl font-bold text-white mb-2">
                 You&apos;re All Set!
               </h2>
-              <p className="text-zinc-400">
+              <p className="text-zinc-400 text-sm">
                 Great job staying consistent. Keep the momentum going!
               </p>
             </div>
 
             {/* Stats Row */}
-            <div className="flex items-center justify-center gap-6 py-4">
-              <div className="text-center px-6 py-3 bg-zinc-800/50 rounded-2xl">
+            <div className="flex items-center justify-center gap-4 py-2">
+              <div className="text-center px-5 py-3 bg-zinc-800/50 rounded-2xl">
                 <div className="flex items-center justify-center gap-2 mb-1">
                   <Flame className="w-5 h-5 text-orange-500" />
                   <span className="text-2xl font-bold text-white">
@@ -290,7 +290,7 @@ export function CheckinForm({
               </div>
               
               {result?.pointsEarned && result.pointsEarned > 0 && (
-                <div className="text-center px-6 py-3 bg-zinc-800/50 rounded-2xl">
+                <div className="text-center px-5 py-3 bg-zinc-800/50 rounded-2xl">
                   <div className="flex items-center justify-center gap-1 mb-1">
                     <span className="text-2xl font-bold text-brand">+{result.pointsEarned}</span>
                   </div>
@@ -303,7 +303,7 @@ export function CheckinForm({
             <Button
               onClick={() => setStep("survey")}
               variant="outline"
-              className="px-8"
+              size="sm"
             >
               {existingCheckin?.mood ? "Edit Survey Responses" : "Complete Daily Survey"}
             </Button>
