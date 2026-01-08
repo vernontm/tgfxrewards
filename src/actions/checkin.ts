@@ -3,22 +3,15 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { POINTS, getStreakBonus, getStreakMilestone } from "@/lib/points";
 import { format, subDays, parseISO } from "date-fns";
+import { revalidatePath } from "next/cache";
 
-interface CheckinData {
-  mood: number;
-  wins: string | null;
-  struggles: string | null;
-  focus: string | null;
-  userId: string;
-}
-
-export async function submitCheckin(data: CheckinData) {
-  if (!data.userId) {
+// Quick check-in (just logs the check-in, no survey data yet)
+export async function quickCheckin(userId: string) {
+  if (!userId) {
     return { success: false, error: "Not authenticated" };
   }
 
   const supabase = createAdminClient();
-  const userId = data.userId;
   const today = format(new Date(), "yyyy-MM-dd");
 
   // Check if user already checked in today
@@ -29,43 +22,37 @@ export async function submitCheckin(data: CheckinData) {
     .eq("checkin_date", today)
     .single();
 
-  const isUpdate = !!existingCheckin;
-
-  // Upsert checkin
-  const { error: checkinError } = await supabase.from("checkins").upsert(
-    {
-      user_id: userId,
-      checkin_date: today,
-      mood: data.mood,
-      wins: data.wins,
-      struggles: data.struggles,
-      focus: data.focus,
-    },
-    {
-      onConflict: "user_id,checkin_date",
-    }
-  );
-
-  if (checkinError) {
-    console.error("Checkin error:", checkinError);
-    return { success: false, error: "Failed to save checkin" };
-  }
-
-  // If this is an update, don't award more points
-  if (isUpdate) {
+  if (existingCheckin) {
+    // Already checked in today
     const { data: streak } = await supabase
       .from("streaks")
       .select("current_count")
       .eq("user_id", userId)
-      .eq("streak_type", "checkin")
       .single();
 
     return {
       success: true,
+      checkinId: existingCheckin.id,
       pointsEarned: 0,
       newStreak: streak?.current_count || 0,
       milestone: null,
+      alreadyCheckedIn: true,
     };
+  }
+
+  // Create new checkin
+  const { data: newCheckin, error: checkinError } = await supabase
+    .from("checkins")
+    .insert({
+      user_id: userId,
+      checkin_date: today,
+    })
+    .select("id")
+    .single();
+
+  if (checkinError) {
+    console.error("Checkin error:", checkinError);
+    return { success: false, error: "Failed to save checkin" };
   }
 
   // Calculate streak
@@ -73,7 +60,6 @@ export async function submitCheckin(data: CheckinData) {
     .from("streaks")
     .select("*")
     .eq("user_id", userId)
-    .eq("streak_type", "checkin")
     .single();
 
   let newStreak = 1;
@@ -86,30 +72,26 @@ export async function submitCheckin(data: CheckinData) {
     const lastCheckinStr = format(lastCheckin, "yyyy-MM-dd");
 
     if (lastCheckinStr === yesterdayStr) {
-      // Consecutive day
       newStreak = (streakData.current_count || 0) + 1;
     } else if (lastCheckinStr === today) {
-      // Already checked in today (shouldn't happen due to isUpdate check)
       newStreak = streakData.current_count || 1;
     }
-    // Otherwise streak resets to 1
   }
 
   if (newStreak > longestStreak) {
     longestStreak = newStreak;
   }
 
-  // Update streak
+  // Update or create streak
   await supabase.from("streaks").upsert(
     {
       user_id: userId,
-      streak_type: "checkin",
       current_count: newStreak,
       longest_count: longestStreak,
       last_checkin_date: today,
     },
     {
-      onConflict: "user_id,streak_type",
+      onConflict: "user_id",
     }
   );
 
@@ -137,12 +119,47 @@ export async function submitCheckin(data: CheckinData) {
 
   const milestone = getStreakMilestone(newStreak);
 
+  revalidatePath("/experiences");
+
   return {
     success: true,
+    checkinId: newCheckin.id,
     pointsEarned: totalPoints,
     newStreak,
     milestone,
+    alreadyCheckedIn: false,
   };
+}
+
+// Update checkin with survey data
+export async function updateCheckinSurvey(
+  checkinId: string,
+  data: {
+    mood: number | null;
+    wins: string | null;
+    struggles: string | null;
+    focus: string | null;
+  }
+) {
+  const supabase = createAdminClient();
+
+  const { error } = await supabase
+    .from("checkins")
+    .update({
+      mood: data.mood,
+      wins: data.wins,
+      struggles: data.struggles,
+      focus: data.focus,
+    })
+    .eq("id", checkinId);
+
+  if (error) {
+    console.error("Update checkin error:", error);
+    return { success: false, error: "Failed to update checkin" };
+  }
+
+  revalidatePath("/experiences");
+  return { success: true };
 }
 
 export async function getTodayCheckinForUser(userId: string) {
@@ -153,7 +170,7 @@ export async function getTodayCheckinForUser(userId: string) {
 
   const { data } = await supabase
     .from("checkins")
-    .select("*")
+    .select("id, mood, wins, struggles, focus")
     .eq("user_id", userId)
     .eq("checkin_date", today)
     .single();
@@ -170,7 +187,6 @@ export async function getCurrentStreakForUser(userId: string) {
     .from("streaks")
     .select("current_count")
     .eq("user_id", userId)
-    .eq("streak_type", "checkin")
     .single();
 
   return data?.current_count || 0;
